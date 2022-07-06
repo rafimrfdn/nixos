@@ -1,0 +1,72 @@
+" My own config begin here
+set nu relativenumber
+set autoindent 
+set expandtab
+set exrc
+set hidden
+set incsearch
+set nobackup
+set noerrorbells
+set nohlsearch
+set noswapfile
+set shiftwidth=2 
+set smartindent
+set tabstop=2 softtabstop=2
+"syntax on
+"set termguicolors
+
+set showmatch
+set mouse=a
+
+" toggle to show and hide number
+nnoremap <F10> <CMD>set nonumber norelativenumber<CR>
+nnoremap <F10> <CMD>set nonumber! norelativenumber!<CR>
+
+" Tab - create new tab using :tabnew
+" To switch opened tab just hit Ctrl-L and Ctrl-H for next and prev tab
+map <C-L> gt
+map <C-H> gT
+
+" toggle to show launch in Goyo mode
+map <F9> :Goyo <bar> <CR>
+
+" toogle to show Neotree
+nnoremap <F3> :Neotree toggle filesystem reveal right<CR>
+
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+"Plug 'vim-airline/vim-airline'
+Plug 'junegunn/goyo.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'kyazdani42/nvim-web-devicons' 
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-neo-tree/neo-tree.nvim'
+Plug 'MunifTanjim/nui.nvim'
+
+" Then run :PlugInstall to install theese plugins above
+" It will automatically created plugin directory on .vim/plugged/
+" Initialize plugin system
+call plug#end() 
+
+" require for lua telescopee
+lua require('mynamespace.telescope')
+lua require('mynamespace.lualine')
+lua require('mynamespace.nvim-web-devicons')
+lua require('mynamespace.lspconfig')
+lua require('mynamespace.neo-tree')
+
+" select text and copy to clipboard using Shift+V or Ctrl+V
+" make sure you install 'xclip' to make this function work
+" now simple use Ctrl+c to copy 
+vnoremap <C-c> "+y    
+" then paste with F12 or set your prefer shortcut
+" map <F12> "+P     
+     
+" We don't need NerdTree, simply just use Netrw
+" default open with :Explore or :Sexplore or :Vexplore or :Sex    
+let g:netrw_banner = 0
