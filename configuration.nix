@@ -11,10 +11,15 @@
       <nixos-hardware/lenovo/thinkpad/x220>
     ];
 
+  # Use latest linux kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
+
+  boot.loader.timeout = 0;
 
   # Enable NTFS
   boot.supportedFilesystems = [ "ntfs" ];
@@ -28,6 +33,29 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # Host for open reddit
+  networking.extraHosts = ''
+    151.101.129.140   i.redditmedia.com
+    52.34.230.181     www.reddithelp.com
+    151.101.65.140    g.redditmedia.com
+    151.101.65.140    a.thumbs.redditmedia.com
+    151.101.1.140     new.reddit.com
+    151.101.129.140   reddit.com
+    151.101.129.140   gateway.reddit.com
+    151.101.129.140   oauth.reddit.com
+    151.101.129.140   sendbird.reddit.com
+    151.101.129.140   v.redd.it
+    151.101.1.140     b.thumbs.redditmedia.com
+    151.101.1.140     events.reddit.com
+    54.210.123.98     stats.redditmedia.com
+    151.101.65.140    www.redditstatic.com
+    151.101.193.140   www.reddit.com
+    52.3.23.26        pixel.redditmedia.com
+    151.101.65.140    www.redditmedia.com
+    151.101.193.140   about.reddit.com
+    52.203.76.9       out.reddit.com
+  '';
 
   # Set your time zone.
   time.timeZone = "Asia/Makassar";
@@ -54,13 +82,52 @@
   # BSPWM
   services.xserver.windowManager.bspwm.enable = true;
 
+  # DWM
+  services.xserver.windowManager.dwm.enable = true;
+  services.dwm-status.enable = true;
+  services.dwm-status.order = [ "audio" "backlight" "battery" "cpu_load" "network" "time" ];
+#  nixpkgs.overlays = [
+#    (final: prev: {
+#      #dwm = prev.dwm.overrideAttrs (old: { src = ./dwm; });
+#      dwm = prev.dwm.overrideAttrs (old: { src = /home/nix/dwm62; });
+#    })
+#  ];
+
+#  nixpkgs.overlays = [
+#    (self: super: {
+#      dwm = super.dwm.overrideAttrs(_: {
+#        src = builtins.fetchGit {
+#          url = "https://github.com/rafimrfdn/dwm-popos/tree/main/dwm+hide-vacant-tags+bar-height";
+#        };
+#      });
+#    })
+#  ];
+
+  nixpkgs.overlays = [
+    (self: super: {
+      dwm = super.dwm.overrideAttrs (oldAttrs: rec {
+        patches = [
+         /home/nix/.config/dwm/dwm-systray-6.3.diff
+         /home/nix/.config/dwm/dwm-cool-autostart-6.2.diff
+         /home/nix/.config/dwm/dwm-ru_gaps-6.3.diff
+         /home/nix/.config/dwm/dwm-warp-6.2.diff
+         /home/nix/.config/dwm/dwm-alwayscenter.diff
+         /home/nix/.config/dwm/dwm-pertag.diff
+         /home/nix/.config/dwm/dwm-hide_vacant_tags-6.3.diff
+        ];
+        configFile = super.writeText "config.h" (builtins.readFile /home/nix/.config/dwm/config.h);
+        postPatch = oldAttrs.postPatch or "" + "\necho 'Using own config file...'\n cp ${configFile} config.def.h";
+      });
+    })
+  ];
+
   # Enable the Pantheon Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.defaultSession = "none+bspwm";
+  services.xserver.displayManager.defaultSession = "none+dwm";
   services.xserver.desktopManager.pantheon.enable = true;
 
   
-  #zsh
+  # zsh
     programs.zsh.enable = true;
     programs.zsh.autosuggestions.enable = true;
     programs.bash.enableCompletion = true;
@@ -113,6 +180,7 @@
 	"video" 
 	"input"
 	"storage"
+	"libvirtd"
 	];
   };
 
@@ -128,10 +196,15 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+
+# Virtualization with qemu kvm
+   virtualisation.libvirtd.enable = true;
+   programs.dconf.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    virt-manager
     wget
     firefox
     neovim
@@ -144,6 +217,10 @@
     zsh
     polybar
     rofi
+    gnumake
+    gnupatch
+    st
+    dmenu
     w3m
     scrot
     killall
@@ -163,8 +240,10 @@
     youtube-dl
     vscodium
     unzip
+    keepassxc
     luajit
-    lf
+    copyq
+    ueberzug
     hugo
     pulseaudio
     pulseaudio-ctl
@@ -176,7 +255,10 @@
     xorg.xev
     zsh-autosuggestions
     font-awesome
+    libreoffice
   ];
+
+
 
 #fonts.fonts = [ ];
 
