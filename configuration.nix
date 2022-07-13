@@ -85,37 +85,63 @@
   # DWM
   services.xserver.windowManager.dwm.enable = true;
   services.dwm-status.enable = true;
-  services.dwm-status.order = [ "audio" "backlight" "battery" "cpu_load" "network" "time" ];
-#  nixpkgs.overlays = [
-#    (final: prev: {
-#      #dwm = prev.dwm.overrideAttrs (old: { src = ./dwm; });
-#      dwm = prev.dwm.overrideAttrs (old: { src = /home/nix/dwm62; });
-#    })
-#  ];
+# services.dwm-status.order = [ "audio" "backlight" "battery" "cpu_load" "network" "time" ];
+  services.dwm-status.order = [ "audio" "backlight" "battery" "time" ];
+  services.dwm-status.extraConfig = ''
+  	debug = false
+	separator = "    "
+	
+	[audio]
+	control = "Master"
+	mute = "ﱝ"
+	template = "{ICO} {VOL}%"
+	icons = ["奄", "奔", "墳"]
+	
+	[backlight]
+	device = "intel_backlight"
+	template = "{ICO} {BL}%"
+	icons = ["", "", ""]
 
-#  nixpkgs.overlays = [
-#    (self: super: {
-#      dwm = super.dwm.overrideAttrs(_: {
-#        src = builtins.fetchGit {
-#          url = "https://github.com/rafimrfdn/dwm-popos/tree/main/dwm+hide-vacant-tags+bar-height";
-#        };
-#      });
-#    })
-#  ];
+	[battery]
+	charging = ""
+	discharging = ""
+	enable_notifier = true
+	no_battery = ""
+	notifier_critical = 10
+	notifier_levels = [2, 5, 10, 15, 20]
+	separator = " · "
+	icons = ["", "", "", "", "", "", "", "", "", "", ""]
+	
+	[cpu_load]
+	template = "{CL1} {CL5} {CL15}"
+	update_interval = 20
+	
+	[network]
+	no_value = "NA"
+	template = "{IPv4} · {IPv6} · {ESSID}"
+	
+	[time]
+	format = "%d-%m-%Y %H:%M"
+	update_seconds = false
+  '';
 
   nixpkgs.overlays = [
+    (final: prev: {
+      dwm = prev.dwm.overrideAttrs (old: { src = /home/nix/dwm-6.3; });
+    })
     (self: super: {
       dwm = super.dwm.overrideAttrs (oldAttrs: rec {
         patches = [
-         /home/nix/.config/dwm/dwm-systray-6.3.diff
-         /home/nix/.config/dwm/dwm-cool-autostart-6.2.diff
-         /home/nix/.config/dwm/dwm-ru_gaps-6.3.diff
-         /home/nix/.config/dwm/dwm-warp-6.2.diff
-         /home/nix/.config/dwm/dwm-alwayscenter.diff
-         /home/nix/.config/dwm/dwm-pertag.diff
-         /home/nix/.config/dwm/dwm-hide_vacant_tags-6.3.diff
+         ./dwm/dwm-systray-6.3.diff
+         ./dwm/dwm-cool-autostart-6.2.diff
+         ./dwm/dwm-ru_gaps-6.3.diff
+         ./dwm/dwm-ru_bottomstack-6.2.diff
+         ./dwm/dwm-warp-6.2.diff
+         ./dwm/dwm-alwayscenter.diff
+         ./dwm/dwm-pertag.diff
+         ./dwm/dwm-hide_vacant_tags-6.3.diff
         ];
-        configFile = super.writeText "config.h" (builtins.readFile /home/nix/.config/dwm/config.h);
+        configFile = super.writeText "config.h" (builtins.readFile ./dwm/config.h);
         postPatch = oldAttrs.postPatch or "" + "\necho 'Using own config file...'\n cp ${configFile} config.def.h";
       });
     })
