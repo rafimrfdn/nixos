@@ -12,7 +12,9 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;     /* 0 means no systray */
 static const int showbar            = 1;     /* 0 means no bar */
 static const int topbar             = 1;     /* 0 means bottom bar */
-static const char *fonts[]          = { "Liberation Mono:style=Regular:size=10", "Font Awesome 6 Free Regular:size=12" };
+static const char *fonts[]          = { "Liberation Mono:style=Regular:size=10", 
+					"Iosevka Nerd Font Mono:style=Regular:size:12"};
+				//	"Font Awesome 6 Free Regular:size=12",};
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -32,7 +34,7 @@ static const char *const autostart[] = {
   "xsetroot -cursor_name left_ptr", NULL,
   "set r rate 300 50", NULL,
   "xset mouse 5 1", NULL,
-  "feh --bg-fill --randomize /home/nix/Pictures/wp/* ", NULL,
+  "feh --bg-fill --randomize /home/nix/Pictures/wp/*", NULL,
   "xrdb -merge .Xresources", NULL,
   "copyq", NULL,
 	NULL /* terminate */
@@ -64,6 +66,9 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "TTT",      bstack },
+	{ "===",      bstackhoriz },
+
 };
 
 /* key definitions */
@@ -102,6 +107,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+        { MODKEY,                       XK_u,      setlayout,      {.v = &layouts[3]} },
+        { MODKEY,              		XK_o,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
