@@ -85,8 +85,7 @@
   # DWM
   services.xserver.windowManager.dwm.enable = true;
   services.dwm-status.enable = true;
-# services.dwm-status.order = [ "audio" "backlight" "battery" "cpu_load" "network" "time" ];
-  services.dwm-status.order = [ "audio" "backlight" "battery" "time" ];
+  services.dwm-status.order = [ "backlight" "time" "battery"  ];
   services.dwm-status.extraConfig = ''
   	debug = false
 	separator = "    "
@@ -148,10 +147,31 @@
   ];
 
   # Enable the Pantheon Desktop Environment.
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.defaultSession = "none+dwm";
-  services.xserver.desktopManager.pantheon.enable = true;
+#  services.xserver.displayManager.lightdm.enable = true;
+#  services.xserver.displayManager.defaultSession = "none+dwm";
+#  services.xserver.desktopManager.pantheon.enable = true;
 
+  # Enable Gnome
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+  
+  environment.gnome.excludePackages = (with pkgs; [
+    gnome-photos
+    gnome-tour
+    gnome.cheese
+    gnome.gnome-music
+    gnome.gnome-terminal
+    gnome.gedit
+    gnome.epiphany
+    gnome.geary 
+    gnome.evince
+    gnome.gnome-characters
+    gnome.totem
+    gnome.tali 
+    gnome.iagno
+    gnome.hitori
+    gnome.atomix 
+  ]);
   
   # zsh
     programs.zsh.enable = true;
@@ -196,18 +216,21 @@
   # Enable touchpad support (enabled default in most desktopManager).
   services.xserver.libinput.enable = true;
 
+  # Enable Network Manager Applet - nmapplet
+  programs.nm-applet.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nix = {
     isNormalUser = true;
     description = "nix";
     extraGroups = [ 
-	"wheel" 
-    	"networkmanager" 
-	"video" 
-	"input"
-	"storage"
-	"libvirtd"
-	];
+                  	"wheel" 
+                    "networkmanager" 
+                  	"video" 
+                  	"input"
+                  	"storage"
+                  	"libvirtd"
+                	];
   };
 
 
@@ -227,13 +250,17 @@
    virtualisation.libvirtd.enable = true;
    programs.dconf.enable = true;
 
+
+  # NodeJS and NPM
+  programs.npm.enable = true;
+
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     virt-manager
     wget
     firefox
-    neovim
     pfetch
     git
     feh
@@ -247,7 +274,8 @@
     gnupatch
     st
     dmenu
-    w3m
+    # w3m
+    ueberzug
     scrot
     killall
     xclip
@@ -255,10 +283,9 @@
     ffmpeg
     mpv
     gimp
-    nodejs
-    nodePackages.npm
     ntfs3g
-    pasystray
+#    pasystray
+    volumeicon
     qogir-icon-theme
     qogir-theme
     lxappearance
@@ -269,7 +296,6 @@
     keepassxc
     luajit
     copyq
-    ueberzug
     hugo
     pulseaudio
     pulseaudio-ctl
@@ -281,12 +307,49 @@
     xorg.xev
     zsh-autosuggestions
     font-awesome
-    libreoffice
+    terminus_font_ttf
+    jetbrains-mono
+#    libreoffice
+    onlyoffice-bin
+    neovim
+    gcc
+    nodejs
   ];
 
 
+#  programs.neovim = { 
+#  	enable = true;
+#        package = pkgs.neovim-unwrapped;
+#	vimAlias = true;
+#	defaultEditor = true;
+#	configure = {
+#	   customRC = ''
+#             set nu relativenumber
+#             vnoremap <C-c> "+y    
+#	   '';
+#	   packages.myVimPackage = with pkgs.vimPlugins; {
+#		    start = [ 
+#                   	nvim-lspconfig
+#			              nvim-compe
+#			              vim-nix
+#			              nvim-colorizer-lua
+#			              vim-closetag
+#			              pears-nvim
+#			              completion-treesitter
+#                    nvim-web-devicons
+#                   	lualine-nvim
+#                   	nvim-treesitter
+#                    telescope-nvim
+#                    telescope-symbols-nvim
+#			              goyo-vim
+#		    ];
+#		    opt = [];
+#	     };
+#	};
+#  };
 
-#fonts.fonts = [ ];
+
+#  fonts.fonts = [ ];
 
    fonts.fonts = with pkgs; [
       (nerdfonts.override { fonts = [ "Iosevka" "FiraCode" "Hack" ]; })
@@ -297,7 +360,7 @@
    security.pam.mount.createMountPoints = true;
    
 
-nix = {
+  nix = {
     # Hard link identical files in the store automatically
     autoOptimiseStore = true;
     # automatically trigger garbage collection
