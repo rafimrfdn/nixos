@@ -18,9 +18,26 @@ set tabstop=2 softtabstop=2
 set showmatch
 set mouse=a
 
+" for markdown 
+"let g:markdown_folding = 1
+" set wrap linebreak
+au BufRead,BufNewFile *.md setlocal wrap linebreak
+
+
+" auto indent on save 
+augroup autoindent
+  au!
+  autocmd BufWritePre * :normal migg=G`i
+augroup End
+
+
 " toggle to show and hide number
 nnoremap <F10> <CMD>set nonumber norelativenumber<CR>
 nnoremap <F10> <CMD>set nonumber! norelativenumber!<CR>
+
+" toggle wrap with Alt+z
+nnoremap <A-z> <CMD>set nowrap<CR>
+nnoremap <A-z> <CMD>set nowrap!<CR>
 
 " Tab - create new tab using :tabnew
 " To switch opened tab just hit Ctrl-L and Ctrl-H for next and prev tab
@@ -32,21 +49,31 @@ map <F9> :Goyo <bar> <CR>
 
 " toogle to show Neotree
 nnoremap <F3> :Neotree toggle filesystem reveal right<CR>
+" nnoremap <F3> :Telescope file_browser<CR>
+nnoremap <F4> :Telescope oldfiles<CR>
 
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
-"Plug 'vim-airline/vim-airline'
 Plug 'junegunn/goyo.vim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons' 
+Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-neo-tree/neo-tree.nvim'
 Plug 'MunifTanjim/nui.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/nvim-cmp'
+
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 
 " Then run :PlugInstall to install theese plugins above
 " It will automatically created plugin directory on .vim/plugged/
@@ -57,8 +84,13 @@ call plug#end()
 lua require('mynamespace.telescope')
 lua require('mynamespace.lualine')
 lua require('mynamespace.nvim-web-devicons')
+lua require('mynamespace.lsp-install')
 lua require('mynamespace.lspconfig')
 lua require('mynamespace.neo-tree')
+lua require('mynamespace.nvim-treesitter')
+lua require('mynamespace.cmp')
+
+set completeopt=menu,menuone,noselect
 
 " select text and copy to clipboard using Shift+V or Ctrl+V
 " make sure you install 'xclip' to make this function work
@@ -66,7 +98,8 @@ lua require('mynamespace.neo-tree')
 vnoremap <C-c> "+y    
 " then paste with F12 or set your prefer shortcut
 " map <F12> "+P     
-     
+
 " We don't need NerdTree, simply just use Netrw
 " default open with :Explore or :Sexplore or :Vexplore or :Sex    
 let g:netrw_banner = 0
+
