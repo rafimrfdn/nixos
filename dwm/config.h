@@ -12,10 +12,11 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;     /* 0 means no systray */
 static const int showbar            = 1;     /* 0 means no bar */
 static const int topbar             = 1;     /* 0 means bottom bar */
-static const char *fonts[]          = { "Liberation Mono:style=Regular:size=10", 
-					"Iosevka Nerd Font Mono:style=Regular:size:12"};
-				//	"Font Awesome 6 Free Regular:size=12",};
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "Iosevka Term:style=Medium:size=10" 
+				//	"Liberation Mono:style=Regular:size=10", 
+				// 	"Font Awesome 6 Free Regular:style=Regular:size=12"
+				 	};
+static const char dmenufont[]       = "Iosevka Term:style=Medium:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -29,15 +30,16 @@ static const char *colors[][3]      = {
 
 /* cool autostart */
 static const char *const autostart[] = {
-  "picom", NULL,
 //  "dwmblocks", NULL,
-  "xsetroot -cursor_name left_ptr", NULL,
-  "set r rate 300 50", NULL,
-  "xset mouse 5 1", NULL,
-  "feh --bg-fill --randomize /home/nix/Pictures/wp/*", NULL,
-  "xrdb -merge .Xresources", NULL,
+  "xrdb", "-merge", ".Xresources", NULL,
+  "xset", "r", "rate", "300", "50", NULL,
+  "xset", "mouse", "5", "1", NULL, 
+  "sh", ".fehbg", NULL, 
   "copyq", NULL,
-	NULL /* terminate */
+  "picom", NULL,
+//  "pasystray", NULL,
+  "volumeicon", NULL,
+  NULL /* terminate */
 };
 
 
@@ -52,7 +54,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-  { "feh",      NULL,       NULL,       0,            1,           -1 },
+	{ "feh",      NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -130,32 +132,32 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-  // powermenu
-  { MODKEY,                       XK_q, spawn, {.v = powermenu } },
-  // rofi
-   { MODKEY, XK_d, spawn, SHCMD("rofi -show drun") },
-  // note
-  { MODKEY, XK_n, spawn, SHCMD("kitty -e ~/.scripts/notetaker.sh") },
-  // File explorer
-  { MODKEY, XK_e, spawn, SHCMD("pcmanfm") },
-  // Browser
-  { MODKEY, XK_w, spawn, SHCMD("firefox") },
-  // Screenshot
-  { 0, XK_Print,  spawn, SHCMD("scrot 'scrot_%Y-%m-%d_%X.png' -e 'mv $f ~/Pictures/'") },
-  { 0|ShiftMask, XK_Print,  spawn, SHCMD("scrot -s 'scrot_%Y-%m-%d_%X.png' -e 'mv $f ~/Pictures/'") },
-  { 0|ControlMask, XK_Print,  spawn, SHCMD("scrot -u 'scrot_%Y-%m-%d_%X.png' -e 'mv $f ~/Pictures/'") },
-  // Background 
-  { MODKEY, XK_z,      spawn,        SHCMD("feh --bg-fill --randomize ~/Pictures/wp/*") },
-  // Clipboard
-  { MODKEY, XK_F12, spawn, SHCMD("copyq show clipboard") },
-  // ----------------- Hardware ------------------
-  // Volume
-  {0, XF86XK_AudioLowerVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -5%")},
-  {0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +5%")},
-  {0, XF86XK_AudioMute, spawn, SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle")},
-  // Brightness
-  {0, XF86XK_MonBrightnessUp, spawn, SHCMD("light -A 5")},
-  {0, XF86XK_MonBrightnessDown, spawn, SHCMD("light -U 5")},
+  	// powermenu
+  	{ MODKEY,                       XK_q, spawn, {.v = powermenu } },
+  	// rofi
+  	 { MODKEY, XK_d, spawn, SHCMD("rofi -show drun") },
+  	// note
+  	{ MODKEY, XK_n, spawn, SHCMD("kitty -e ~/.scripts/notetaker.sh") },
+  	// File explorer
+  	{ MODKEY, XK_e, spawn, SHCMD("nautilus") },
+  	// Browser
+  	{ MODKEY, XK_w, spawn, SHCMD("firefox") },
+  	// Screenshot
+  	{ 0, XK_Print,  spawn, SHCMD("scrot 'scrot_%Y-%m-%d_%X.png' -e 'mv $f ~/Pictures/'") },
+  	{ 0|ShiftMask, XK_Print,  spawn, SHCMD("scrot -s 'scrot_%Y-%m-%d_%X.png' -e 'mv $f ~/Pictures/'") },
+  	{ 0|ControlMask, XK_Print,  spawn, SHCMD("scrot -u 'scrot_%Y-%m-%d_%X.png' -e 'mv $f ~/Pictures/'") },
+  	// Background 
+  	{ MODKEY, XK_z,      spawn,        SHCMD("feh --bg-fill --randomize ~/Pictures/wp/*") },
+  	// Clipboard
+  	{ MODKEY, XK_F12, spawn, SHCMD("copyq show clipboard") },
+  	// ----------------- Hardware ------------------
+  	// Volume
+  	{0, XF86XK_AudioLowerVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -5%")},
+  	{0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +5%")},
+  	{0, XF86XK_AudioMute, spawn, SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle")},
+  	// Brightness
+  	{0, XF86XK_MonBrightnessUp, spawn, SHCMD("light -A 5")},
+  	{0, XF86XK_MonBrightnessDown, spawn, SHCMD("light -U 5")},
 };
 
 /* button definitions */
@@ -174,3 +176,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+
