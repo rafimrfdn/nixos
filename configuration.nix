@@ -126,7 +126,7 @@
 
   nixpkgs.overlays = [
     (final: prev: {
-      dwm = prev.dwm.overrideAttrs (old: { src = /home/nix/dwm-6.3; });
+      dwm = prev.dwm.overrideAttrs (old: { src = ./dwm/dwm-6.3; });
     })
     (self: super: {
       dwm = super.dwm.overrideAttrs (oldAttrs: rec {
@@ -143,6 +143,14 @@
         configFile = super.writeText "config.h" (builtins.readFile ./dwm/config.h);
         postPatch = oldAttrs.postPatch or "" + "\necho 'Using own config file...'\n cp ${configFile} config.def.h";
       });
+      st = super.st.overrideAttrs (oldAttrs: rec {
+        patches = [
+	./st/st-scrollback-0.8.5.diff
+	./st/st-alpha-20220206-0.8.5.diff
+	./st/st-anysize-20220718-baa9357.diff
+	./st/st-w3m-0.8.3.diff
+        ];
+      });
     })
   ];
 
@@ -153,25 +161,28 @@
 
   # Enable Gnome
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+#  services.xserver.desktopManager.gnome.enable = true;
+
+# Enable Cinnamon
+  services.xserver.desktopManager.cinnamon.enable = true;
   
-  environment.gnome.excludePackages = (with pkgs; [
-    gnome-photos
-    gnome-tour
-    gnome.cheese
-    gnome.gnome-music
-    gnome.gnome-terminal
-    gnome.gedit
-    gnome.epiphany
-    gnome.geary 
-    gnome.evince
-    gnome.gnome-characters
-    gnome.totem
-    gnome.tali 
-    gnome.iagno
-    gnome.hitori
-    gnome.atomix 
-  ]);
+#  environment.gnome.excludePackages = (with pkgs; [
+#    gnome-photos
+#    gnome-tour
+#    gnome.cheese
+#    gnome.gnome-music
+#    gnome.gnome-terminal
+#    gnome.gedit
+#    gnome.epiphany
+#    gnome.geary 
+#    gnome.evince
+#    gnome.gnome-characters
+#    gnome.totem
+#    gnome.tali 
+#    gnome.iagno
+#    gnome.hitori
+#    gnome.atomix 
+#  ]);
   
   # zsh
     programs.zsh.enable = true;
@@ -274,8 +285,9 @@
     gnupatch
     st
     dmenu
-    # w3m
+    w3m
     ueberzug
+    lf
     scrot
     killall
     xclip
@@ -315,6 +327,7 @@
     gcc
     nodejs
   ];
+
 
 
 #  programs.neovim = { 
