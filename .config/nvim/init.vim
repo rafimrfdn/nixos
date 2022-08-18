@@ -12,6 +12,7 @@ set noswapfile
 set shiftwidth=2 
 set smartindent
 set tabstop=2 softtabstop=2
+set nowrap
 "syntax on
 "set termguicolors
 
@@ -43,6 +44,7 @@ nnoremap <A-z> <CMD>set nowrap!<CR>
 " To switch opened tab just hit Ctrl-L and Ctrl-H for next and prev tab
 map <C-L> gt
 map <C-H> gT
+map <C-t> :tabnew <CR>
 
 " toggle to show launch in Goyo mode
 map <F9> :Goyo <bar> <CR>
@@ -102,4 +104,3 @@ vnoremap <C-c> "+y
 " We don't need NerdTree, simply just use Netrw
 " default open with :Explore or :Sexplore or :Vexplore or :Sex    
 let g:netrw_banner = 0
-
