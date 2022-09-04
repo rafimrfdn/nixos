@@ -19,4 +19,4 @@ Clone this repo then place the `configuration.nix` file and `DWM and ST` folder 
 
 ## screenshot
 
-![nixos configuration + dwm build](https://github.com/rafimrfdn/nixos/blob/main/nixos-configuration-dwm-build-rafimrfdn-jagotekno.jpg)
+![nixos configuration + dwm build](https://github.com/rafimrfdn/nixos/blob/main/nixos-configuration-dwm-build-rafimrfdn.jpg)
